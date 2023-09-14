@@ -29,7 +29,7 @@ export default {
       this.selected_days.push(date);
     },
     removeDay(date){
-      this.selected_days = this.selected_days.filter((selected_day) => selected_day != date);
+      this.selected_days = this.selected_days.filter((selected_day) => selected_day.val != date.val);
     },
   },
 }
