@@ -10,7 +10,7 @@
             <div v-for="(week, w_key) in week_days" :key="w_key">{{ week }}</div>
         </div>
         <div v-for="(week, w_key) in getCalender" :key="w_key" class="week">
-            <div v-for="(day, d_key) in week" :key="d_key" :class="{'selected':isAppended(makeDate(day, d_key))}" @click="clickDate(day, d_key)">{{ day }}</div>
+            <div v-for="(day, d_key) in week" :key="d_key" :class="{'selected':day === null ? false : isAppended(makeDate(day, d_key).val)}" @click="clickDate(day, d_key)">{{ day }}</div>
         </div>
     </div>
 </div>
@@ -46,19 +46,31 @@ export default {
             }
         },
         clickDate(day, d_key){
+            if(day === null || d_key === null){
+                return null;
+            }
+
             let date = this.makeDate(day, d_key);
 
-            if(this.isAppended(date)){
+            if(this.isAppended(date.val)){
                 this.$emit('remove', date);
             }else{
                 this.$emit('add', date);
             }
         },
         makeDate(day, d_key){
-            return this.currentYear + '年' + this.currentMonth + '月' + day + '日 (' + this.week_days[d_key] + ')';
+            if(day === null || d_key === null){
+                return null;
+            }
+            let month = ('0' + this.currentMonth).slice( -2 );
+            day = ('0' + day).slice( -2 );
+            return {
+                'val': this.currentYear + '/' + month + '/' + day,
+                'show': this.currentYear + '年' + month + '月' + day + '日 (' + this.week_days[d_key] + ')',
+            }
         },
         isAppended(date){
-            return this.selectedDays.filter((selected_day) => selected_day == date).length > 0;
+            return this.selectedDays.filter((selected_day) => selected_day.val == date).length > 0;
         }
     },
     computed: {
@@ -88,7 +100,8 @@ export default {
             return last_day.getDate();
         },
         selectedDays(){
-            return this.selected_days;
+            let selected = this.selected_days;
+            return selected.sort((a, b) =>  a.val > b.val);
         },
     },
 }

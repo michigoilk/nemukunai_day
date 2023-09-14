@@ -3,7 +3,7 @@
     <DatePicker @add="addDay" @remove="removeDay" :selected_days="selected_days"></DatePicker>
     <div id="days">
       <div v-for="(selected_day, key) in selected_days" :key="key">
-        {{ selected_day }}<br>
+        {{ selected_day.show }}<br>
         <br>
         <hr>
       </div>
